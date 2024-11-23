@@ -7,6 +7,7 @@ on:
         description: "Select Terraform action"
         required: true
         default: "validate"
+        type: choice
         options:
           - validate
           - plan
