@@ -40,7 +40,7 @@ jobs:
         aws-region: ${{ env.TF_VAR_region }}
 
     - name: Terraform Init
-      run: terraform init"
+      run: terraform init
 
     - name: Terraform Action
       run: |
