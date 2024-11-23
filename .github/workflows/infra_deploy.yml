@@ -14,7 +14,7 @@ on:
           - apply
 
 env:
-  TF_PROFILE: portfolio  
+  # TF_PROFILE: portfolio  
   TF_VAR_region: "ap-south-1"  
 
 run-name: Performed ${{ inputs.action }} by @${{ github.actor }}
@@ -32,16 +32,20 @@ jobs:
       with:
         terraform_version: "1.9.8"  
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.TF_VAR_region }}
-      
-    - name: Set AWS Profile
+    - name: Install AWS CLI v2
       run: |
-        echo "AWS_PROFILE=portfolio" >> $GITHUB_ENV
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o /tmp/awscliv2.zip
+        unzip -q /tmp/awscliv2.zip -d /tmp
+        sudo /tmp/aws/install --update
+
+
+    - name: Configure AWS backend
+      run: |
+         aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID --profile $AWS_PROFILE && aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY --profile $AWS_PROFILE && aws configure set region $TF_region --profile $AWS_PROFILE
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+        AWS_PROFILE: "portfolio"
 
     - name: Terraform Init
       run: terraform init
