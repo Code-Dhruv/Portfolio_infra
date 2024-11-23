@@ -38,9 +38,13 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.TF_VAR_region }}
+      
+    - name: Set AWS Profile
+      run: |
+        echo "AWS_PROFILE=portfolio" >> $GITHUB_ENV
 
     - name: Terraform Init
-      run: terraform init
+      run: terraform init -backend-config="profile=${{ env.TF_PROFILE }}"
 
     - name: Terraform Action
       run: |
